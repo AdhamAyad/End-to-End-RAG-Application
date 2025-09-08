@@ -1,0 +1,4 @@
+.terraform/
+*.tfvars
+end-to-end-rag-application.json
+*.tfstate
