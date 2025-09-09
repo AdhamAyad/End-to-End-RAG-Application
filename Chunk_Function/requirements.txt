@@ -1,0 +1,5 @@
+fastapi
+uvicorn[standard]
+pandas
+PyPDF2
+python-multipart

@@ -53,3 +53,14 @@ module "admin_cloud_run_sa" {
         "roles/artifactregistry.reader"
     ]
 }
+
+# 5. Chunk Cloud Run Service Account
+module "chunk_cloud_run_sa" {
+    source = "./modules/service_account_module"
+    account_id = "chunk-cloud-run-sa"
+    display_name = "Chunk Cloud Run Service Account"
+    project_id = var.project_id
+    rules = [
+        "roles/artifactregistry.reader"
+    ]
+}
