@@ -22,3 +22,21 @@
 output "chunk_cloud_run_endpoint" {
   value = module.chunk_cloud_run.cloud_run_endpoint
 }
+
+# 6. Embedding Model EndPoint URL
+output "index_endpoint_url" {
+  description = "The URL of the Vertex AI Endpoint for embeddings."
+  value       = google_vertex_ai_index_endpoint.rag_endpoint.id
+}
+
+output "redis_host" {
+  value = google_redis_instance.user_memory_store.host
+}
+
+output "redis_port" {
+  value = google_redis_instance.user_memory_store.port
+}
+
+output "user_url" {
+  value = module.user_cloud_run.cloud_run_endpoint
+}

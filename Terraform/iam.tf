@@ -18,9 +18,10 @@ module "user_cloud_run_sa" {
     project_id = var.project_id
     rules = [
         "roles/run.invoker",
-        "roles/memcache.editor",
+        "roles/redis.viewer",
         "roles/aiplatform.user",
-        "roles/artifactregistry.reader"
+        "roles/artifactregistry.reader",
+        "roles/compute.networkUser"
     ]
 }
 
@@ -64,3 +65,11 @@ module "chunk_cloud_run_sa" {
         "roles/artifactregistry.reader"
     ]
 }
+
+# # Embedding Model and Vector DB / Matching Engine Index Service Account
+# module "vertex_sa" {
+#     source = "./modules/service_account_module"
+#     account_id = "vertex-sa"
+#     display_name = "Vertex Service Account"
+#     project_id = var.project_id
+# }

@@ -19,6 +19,10 @@ resource "google_cloud_run_v2_service" "cloud_run_module" {
       max_instance_count = var.max_instances
     }
 
+    vpc_access {
+      connector = var.vpc_connector
+    }
+
     service_account = var.service_account_email
     
   }

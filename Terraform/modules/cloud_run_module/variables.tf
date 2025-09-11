@@ -53,3 +53,9 @@ variable "ingress" {
   type        = string
   default     = "INGRESS_TRAFFIC_INTERNAL_ONLY"
 }
+
+variable "vpc_connector" {
+  description = "Optional VPC Connector for Cloud Run"
+  type        = string
+  default     = ""
+}
