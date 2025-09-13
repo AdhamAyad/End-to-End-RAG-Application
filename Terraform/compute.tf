@@ -5,11 +5,12 @@ module "chunk_cloud_run" {
   image                 = "${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.images_repo.repository_id}/chunk-image:v1"
   port                  = 8080
   service_account_email = module.chunk_cloud_run_sa.service_account_email
-  auth                  = "private"
+  auth                  = "public"
   by_req                = true
   min_instances         = 0
   max_instances         = 3
-  ingress               = "INGRESS_TRAFFIC_INTERNAL_ONLY"
+  ingress               = "INGRESS_TRAFFIC_ALL"
+  # vpc_connector = google_vpc_access_connector.cloud_run_connector.id
   depends_on            = [
     module.chunk_cloud_run_sa,
     null_resource.push_image
@@ -46,6 +47,6 @@ module "user_cloud_run" {
     module.chunk_cloud_run,
     google_redis_instance.user_memory_store,
     google_vpc_access_connector.cloud_run_connector,
-    google_vertex_ai_index_endpoint.rag_endpoint
+    google_vertex_ai_index_endpoint_deployed_index.rag_deployed
     ]
 }

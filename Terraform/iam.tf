@@ -62,7 +62,8 @@ module "chunk_cloud_run_sa" {
     display_name = "Chunk Cloud Run Service Account"
     project_id = var.project_id
     rules = [
-        "roles/artifactregistry.reader"
+        "roles/artifactregistry.reader",
+        "roles/run.invoker",
     ]
 }
 
@@ -72,4 +73,4 @@ module "chunk_cloud_run_sa" {
 #     account_id = "vertex-sa"
 #     display_name = "Vertex Service Account"
 #     project_id = var.project_id
-# }
+# }public
