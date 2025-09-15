@@ -50,3 +50,24 @@ module "user_cloud_run" {
     google_vertex_ai_index_endpoint_deployed_index.rag_deployed
     ]
 }
+
+module "admin_cloud_run" {
+  source                = "./modules/cloud_run_module/"
+  service_name          = "admin-cloud-run"
+  region                = var.region
+  image                 = "${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.images_repo.repository_id}/admin-backend:v1"
+  port                  = 8080
+  service_account_email = module.admin_cloud_run_sa.service_account_email
+  auth                  = "public"
+  by_req                = true
+  min_instances         = 0
+  max_instances         = 3
+  ingress               = "INGRESS_TRAFFIC_ALL"
+  #vpc_connector = google_vpc_access_connector.cloud_run_connector.id
+  depends_on            = [
+    module.admin_cloud_run_sa,
+    null_resource.push_admin_backend_image,
+    module.chunk_cloud_run,
+    google_vertex_ai_index_endpoint_deployed_index.rag_deployed
+    ]
+}

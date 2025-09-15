@@ -1,0 +1,39 @@
+FROM python:3.12-slim AS builder
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install --user -r requirements.txt 
+
+FROM python:3.12-slim AS final
+
+WORKDIR /app
+
+COPY --from=builder /root/.local /root/.local
+
+ENV PATH=/root/.local/bin:$PATH
+
+ARG EMBEDDING_ENDPOINT
+ENV EMBEDDING_ENDPOINT=${EMBEDDING_ENDPOINT}
+
+ARG CHUNK_URL
+ENV CHUNK_URL=${CHUNK_URL}
+
+ARG VECTOR_DB_ENDPOINT
+ENV VECTOR_DB_ENDPOINT=${VECTOR_DB_ENDPOINT}
+
+ARG DEPLOYED_INDEX_ID
+ENV DEPLOYED_INDEX_ID=${DEPLOYED_INDEX_ID}
+
+ARG PROJECT_ID
+ENV PROJECT_ID=${PROJECT_ID}
+
+ARG REGION
+ENV REGION=${REGION}
+
+COPY main.py .
+
+EXPOSE 8080
+
+ENTRYPOINT ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]

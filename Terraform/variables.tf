@@ -9,3 +9,8 @@ variable "region" {
        description = "Current Region"
        default = "us-east1"
     }
+
+variable "admin_bucket_name" {
+       type = string
+       description = "Current Region"
+    }

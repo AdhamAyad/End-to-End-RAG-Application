@@ -51,6 +51,36 @@ resource "null_resource" "push_user_backend_image" {
   ]
 }
 
+resource "null_resource" "push_admin_backend_image" {
+   triggers = {
+    always_run = timestamp()
+  }
+  provisioner "local-exec" {
+    command = <<EOT
+      gcloud auth configure-docker ${var.region}-docker.pkg.dev -q
+
+      docker build \
+      --build-arg CHUNK_URL=${module.chunk_cloud_run.cloud_run_endpoint} \
+      --build-arg VECTOR_DB_ENDPOINT="https://${google_vertex_ai_index_endpoint.rag_endpoint.public_endpoint_domain_name}/v1/projects/${var.project_id}/locations/${var.region}/indexEndpoints/${google_vertex_ai_index_endpoint.rag_endpoint.name}:upsertDatapoints" \
+      --build-arg DEPLOYED_INDEX_ID=${google_vertex_ai_index_endpoint_deployed_index.rag_deployed.deployed_index_id} \
+      --build-arg EMBEDDING_ENDPOINT="https://${var.region}-aiplatform.googleapis.com/v1/projects/${var.project_id}/locations/${var.region}/publishers/google/models/text-embedding-004:predict" \
+      --build-arg PROJECT_ID=${var.project_id} \
+      --build-arg REGION=${var.region} \
+      -t ${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.images_repo.repository_id}/admin-backend:v1 ../Admin_Backend/
+      
+      docker push ${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.images_repo.repository_id}/admin-backend:v1
+    EOT
+    interpreter = ["bash", "-c"]
+  }
+
+  depends_on = [
+    google_artifact_registry_repository.images_repo,
+    module.chunk_cloud_run,
+    google_vertex_ai_index_endpoint.rag_endpoint,
+    google_vertex_ai_index_endpoint_deployed_index.rag_deployed,
+  ]
+}
+
 # Vector DB / Matching Engine Index
 resource "google_vertex_ai_index" "rag_index" {
   display_name        = "rag_index_01"
