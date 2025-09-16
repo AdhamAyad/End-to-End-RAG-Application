@@ -15,7 +15,7 @@ This project demonstrates a complete **End-to-End Retrieval-Augmented Generation
 
 ## 🖼️ Project Diagram
 
-![Diagram](Assets/Diagram.svg)
+![Diagram](Assets/Diagram.png)
 
 ---
 
