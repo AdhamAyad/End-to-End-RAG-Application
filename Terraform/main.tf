@@ -81,6 +81,29 @@ resource "null_resource" "push_admin_backend_image" {
   ]
 }
 
+resource "null_resource" "push_user_frontend_image" {
+   triggers = {
+    always_run = timestamp()
+  }
+  provisioner "local-exec" {
+    command = <<EOT
+      gcloud auth configure-docker ${var.region}-docker.pkg.dev -q
+
+      docker build \
+      --build-arg USER_CLOUD_RUN_URL=${module.user_cloud_run.cloud_run_endpoint} \
+      -t ${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.images_repo.repository_id}/user-frontend:v1 ../User_Frontend/
+      
+      docker push ${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.images_repo.repository_id}/user-frontend:v1
+    EOT
+    interpreter = ["bash", "-c"]
+  }
+
+  depends_on = [
+    google_artifact_registry_repository.images_repo,
+    module.user_cloud_run,
+  ]
+}
+
 # Vector DB / Matching Engine Index
 resource "google_vertex_ai_index" "rag_index" {
   display_name        = "rag_index_01"
