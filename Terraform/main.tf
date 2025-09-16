@@ -60,6 +60,7 @@ resource "null_resource" "push_admin_backend_image" {
       gcloud auth configure-docker ${var.region}-docker.pkg.dev -q
 
       docker build \
+      --build-arg METADATA_DB_URL="projects/${var.project_id}/databases/${var.firestore_db_name}/documents" \
       --build-arg CHUNK_URL=${module.chunk_cloud_run.cloud_run_endpoint} \
       --build-arg VECTOR_DB_ENDPOINT="https://${google_vertex_ai_index_endpoint.rag_endpoint.public_endpoint_domain_name}/v1/projects/${var.project_id}/locations/${var.region}/indexEndpoints/${google_vertex_ai_index_endpoint.rag_endpoint.name}:upsertDatapoints" \
       --build-arg DEPLOYED_INDEX_ID=${google_vertex_ai_index_endpoint_deployed_index.rag_deployed.deployed_index_id} \
@@ -78,6 +79,7 @@ resource "null_resource" "push_admin_backend_image" {
     module.chunk_cloud_run,
     google_vertex_ai_index_endpoint.rag_endpoint,
     google_vertex_ai_index_endpoint_deployed_index.rag_deployed,
+    google_firestore_database.matedata_db
   ]
 }
 

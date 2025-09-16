@@ -14,3 +14,8 @@ variable "admin_bucket_name" {
        type = string
        description = "Current Region"
     }
+
+variable "firestore_db_name" {
+  description = "Firestore database name"
+  type        = string
+}
