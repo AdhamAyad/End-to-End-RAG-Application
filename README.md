@@ -16,7 +16,7 @@ This project demonstrates a complete **Retrieval-Augmented Generation (RAG) arch
 
 ## Project Diagram
 
-![Diagram](assets/diagram.svg)
+![Diagram](assets/Diagram.svg)
 
 ---
 
