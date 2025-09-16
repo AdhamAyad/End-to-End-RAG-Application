@@ -61,13 +61,13 @@ module "subscription_sa" {
     ]
 }
 
-# module "cdn_bucket_sa" {
-#     source = "./modules/service_account_module"
-#     account_id = "user-cdn-bucket-sa"
-#     display_name = "User Frontend Service Account"
-#     project_id = var.project_id
-#     rules = [
-#         "roles/run.invoker",
-#         "roles/storage.objectViewer"
-#     ]
-# }
+module "admin_frontend_sa" {
+    source = "./modules/service_account_module"
+    account_id = "user-cdn-bucket-sa"
+    display_name = "User Frontend Service Account"
+    project_id = var.project_id
+    rules = [
+        "roles/run.invoker",
+        "roles/storage.objectViewer"
+    ]
+}

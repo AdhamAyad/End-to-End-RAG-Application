@@ -30,6 +30,10 @@ output "user_frontend_url" {
   value = module.user_frontend_cloud_run.cloud_run_endpoint
 }
 
+output "admin_frontend_url" {
+  value = module.admin_frontend_cloud_run.cloud_run_endpoint
+}
+
 # output "index_endpoint_url" {
 #   description = "The URL of the Vertex AI Endpoint for embeddings."
 #   value       = google_vertex_ai_index_endpoint.rag_endpoint.id
