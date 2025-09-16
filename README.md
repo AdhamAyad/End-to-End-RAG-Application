@@ -1,75 +1,72 @@
-# 📌 End-to-End RAG Application on GCP
+# End-to-End RAG Application on GCP
 
-This project demonstrates a complete **End-to-End Retrieval-Augmented Generation (RAG) architecture** using **Google Cloud Platform (GCP)**:
+This project demonstrates a complete **Retrieval-Augmented Generation (RAG) architecture** on **Google Cloud Platform (GCP)**:
 
-- 🧑‍💻 Frontend & Backend hosted on **Cloud Run**
-- ⚙️ Automation with **Terraform**:
+- Frontend & Backend on **Cloud Run**
+- Full **Terraform automation**:
   - Artifact Registry for Docker images
-  - Building & pushing Docker images
-  - Creating Cloud Run services, service accounts, VPC, and VPC connectors
-- 🗄️ **Redis Memory Store** for caching user questions
-- 📦 **Vertex AI** for embeddings, vector database (index + endpoint), and LLM
-- ☁️ Fully internal/external network controls with VPC connector
+  - Build & push Docker images
+  - Deploy Cloud Run, service accounts, VPC & connectors
+- **Redis Memory Store** for caching user questions
+- **Vertex AI** for embeddings, vector database (index + endpoint), and LLM
+- **Pub/Sub** for event-driven file processing
+- **Firestore** for metadata storage
 
 ---
 
-## 🖼️ Project Diagram
+## Project Diagram
 
-![Diagram](Assets/Diagram.svg)
-
----
-
-## 🧠 User Flow
-
-1. User submits a question via **frontend** on Cloud Run  
-2. Backend checks **Redis** via **VPC connector** for cached answers  
-3. If answer exists → return cached answer  
-4. If not → backend sends question to **chunk function** (Cloud Run)  
-5. Backend receives text chunks and sends them to **Vertex AI embedding model**  
-6. Embeddings are used to query the **Vertex AI vector database (index + endpoint)**  
-7. Backend sends question + retrieved vectors to **Vertex AI LLM**  
-8. Generated answer is stored in **Redis** for future requests  
-9. Answer is returned to the user
+![Diagram](assets/diagram.svg)
 
 ---
 
-## 🧑‍💼 Admin Flow
+## User Flow
 
-1. Admin uploads files via **frontend** (Cloud Run)  
-2. Files are uploaded to **GCS bucket**  
-3. Bucket triggers **Pub/Sub topic** → Pub/Sub subscription → Admin backend (Cloud Run)  
-4. Backend sends files to **chunk function** (Cloud Run)  
-5. Backend sends chunks to **Vertex AI embedding model**  
-6. Embeddings are inserted into **Vertex AI vector database**  
-7. Metadata stored in **Firestore**  
-8. Pub/Sub subscription sends acknowledgement to ensure reliable event processing  
-9. Dead-letter topic handles failed events
-
----
-
-## ⚙️ Backend & Infrastructure
-
-- **Cloud Run services** for frontend, backend, and chunk function  
-- **Service Accounts** with minimal required permissions  
-- **Docker Images** built and pushed via **Terraform automation**  
-- **Vertex AI**:
-  - Embedding model
-  - Vector database (index + endpoint)
-  - LLM model
-- **Redis Memory Store** for caching user questions  
-- **VPC & VPC Connector** for internal communication  
+1. User submits a question via frontend (Cloud Run)  
+2. Backend checks Redis (via VPC connector) for cached answers  
+3. If found → return cached answer  
+4. Else → call chunk function (Cloud Run)  
+5. Generate embeddings via Vertex AI  
+6. Query Vertex AI vector database  
+7. Send context + question to Vertex AI LLM  
+8. Store answer in Redis  
+9. Return answer to user  
 
 ---
 
-## 📁 Project Structure
+## Admin Flow
+
+1. Admin uploads files via frontend (Cloud Run)  
+2. Files go to GCS bucket → triggers Pub/Sub  
+3. Pub/Sub subscription sends event to admin backend (Cloud Run)  
+4. Backend calls chunk function (Cloud Run)  
+5. Generate embeddings via Vertex AI  
+6. Insert embeddings into vector database  
+7. Store metadata in Firestore  
+8. Pub/Sub ensures delivery & retries, with dead-letter topic for failures  
+
+---
+
+## Backend & Infrastructure
+
+- Cloud Run services (frontend, backend, chunk function)  
+- Service Accounts with least privilege  
+- Docker images built & deployed via Terraform  
+- Vertex AI (embedding, vector database, LLM)  
+- Redis Memory Store  
+- VPC & VPC connector  
+- Pub/Sub for reliable event handling  
+
+---
+
+## Project Structure
 
 ```bash
-📁 Admin_Backend      # Admin backend code (Python/NodeJS) + Dockerfile
-📁 Chunk_Function     # Chunk function code + Dockerfile
-📁 Terraform          # Terraform scripts for full infrastructure
-📁 Users_Backend      # User backend code + Dockerfile
-📁 Admin_Frontend     # Admin frontend code + Dockerfile
-📁 User_Frontend      # User frontend code + Dockerfile
-📁 assets             # Diagram and video test
+📁 Admin_Backend      # Admin backend
+📁 Chunk_Function     # Chunk function
+📁 Terraform          # Terraform IaC
+📁 Users_Backend      # User backend
+📁 Admin_Frontend     # Admin frontend
+📁 User_Frontend      # User frontend
+📁 assets             # Diagram & test video
 README.md
-
